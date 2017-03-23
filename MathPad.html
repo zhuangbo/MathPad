@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MathPad v0.1</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- include summernote css/js-->
+    <link href="https://cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
+    <style>
+      .note-editable.panel-body {
+        overflow-y: scroll;
+      }
+    </style>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="https://cdn.bootcss.com/fullPage.js/2.9.4/jquery.fullpage.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/fullPage.js/2.9.4/vendors/scrolloverflow.min.js"></script>
+    <script src="https://cdn.bootcss.com/fullPage.js/2.9.4/jquery.fullpage.min.js"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        showProcessingMessages: false,
+        tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+        SVG: { scale: 100 },
+        TeX: { equationNumbers: {  autoNumber: "AMS"  }}
+      });
+    </script>
+    <script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script>
+    var Preview = {
+      delay: 150,        // delay after keystroke before updating
+      preview: null,     // filled in by Init below
+      buffer: null,      // filled in by Init below
+      timeout: null,     // store setTimout id
+      mjRunning: false,  // true when MathJax is processing
+      mjPending: false,  // true when a typeset has been queued
+      oldText: null,     // used to check if an update is needed
+      //
+      //  Get the preview and buffer DIV's
+      //
+      Init: function () {
+        this.preview = document.getElementById("MathPreview");
+        this.buffer = document.getElementById("MathBuffer");
+      },
+      //
+      //  Switch the buffer and preview, and display the right one.
+      //  (We use visibility:hidden rather than display:none since
+      //  the results of running MathJax are more accurate that way.)
+      //
+      SwapBuffers: function () {
+        var buffer = this.preview, preview = this.buffer;
+        this.buffer = buffer; this.preview = preview;
+        buffer.style.visibility = "hidden"; buffer.style.position = "absolute";
+        preview.style.position = ""; preview.style.visibility = "";
+      },
+      //
+      //  This gets called when a key is pressed in the textarea.
+      //  We check if there is already a pending update and clear it if so.
+      //  Then set up an update to occur after a small delay (so if more keys
+      //    are pressed, the update won't occur until after there has been
+      //    a pause in the typing).
+      //  The callback function is set up below, after the Preview object is set up.
+      //
+      Update: function () {
+        if (this.timeout) {clearTimeout(this.timeout)}
+        this.timeout = setTimeout(this.callback,this.delay);
+      },
+      //
+      //  Creates the preview and runs MathJax on it.
+      //  If MathJax is already trying to render the code, return
+      //  If the text hasn't changed, return
+      //  Otherwise, indicate that MathJax is running, and start the
+      //    typesetting.  After it is done, call PreviewDone.
+      //
+      CreatePreview: function () {
+        Preview.timeout = null;
+        if (this.mjPending) return;
+        // var text = document.getElementById("MathInput").value;
+        var text = $('#MathInput').summernote('code');
+        if (text === this.oldtext) return;
+        if (this.mjRunning) {
+          this.mjPending = true;
+          MathJax.Hub.Queue(["CreatePreview",this]);
+        } else {
+          this.buffer.innerHTML = this.oldtext = text;
+          this.mjRunning = true;
+          MathJax.Hub.Queue(
+            ["resetEquationNumbers",MathJax.InputJax.TeX],
+            ["Typeset",MathJax.Hub,this.buffer],
+            ["PreviewDone",this]
+          );
+        }
+      },
+      //
+      //  Indicate that MathJax is no longer running,
+      //  and swap the buffers to show the results.
+      //
+      PreviewDone: function () {
+        this.mjRunning = this.mjPending = false;
+        this.SwapBuffers();
+      }
+    };
+    //
+    //  Cache a callback to the CreatePreview action
+    //
+    Preview.callback = MathJax.Callback(["CreatePreview",Preview]);
+    Preview.callback.autoReset = true;  // make sure it can run more than once
+    </script>
+  </head>
+  <body>
+    <div id="fullpage">
+    <!-- SECTION WELCOME -->
+    <div class="section fp-noscroll" data-anchor="welcome">
+      <div class="container-fluid">
+        <div class="row clearfix">
+
+          <div class="jumbotron">
+            <div class="pull-right" style="display:inline; margin-right:1em">
+              <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="thems" data-toggle="dropdown" title="Themes"><i class="fa fa-lg fa-bars"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="thems">
+                  <li><a href="#" data-theme="default" class="theme-link">Default</a></li>
+                  <li><a href="#" data-theme="cerulean" class="theme-link">Cerulean</a></li>
+                  <li><a href="#" data-theme="cosmo" class="theme-link">Cosmo</a></li>
+                  <li><a href="#" data-theme="cyborg" class="theme-link">Cyborg</a></li>
+                  <li><a href="#" data-theme="darkly" class="theme-link">Darkly</a></li>
+                  <li><a href="#" data-theme="flatly" class="theme-link">Flatly</a></li>
+                  <li><a href="#" data-theme="journal" class="theme-link">Journal</a></li>
+                  <li><a href="#" data-theme="lumen" class="theme-link">Lumen</a></li>
+                  <li><a href="#" data-theme="paper" class="theme-link">Paper</a></li>
+                  <li><a href="#" data-theme="readable" class="theme-link">Readable</a></li>
+                  <li><a href="#" data-theme="sandstone" class="theme-link">Sandstone</a></li>
+                  <li><a href="#" data-theme="simplex" class="theme-link">Simplex</a></li>
+                  <li><a href="#" data-theme="slate" class="theme-link">Slate</a></li>
+                  <li><a href="#" data-theme="spacelab" class="theme-link">Spacelab</a></li>
+                  <li><a href="#" data-theme="superhero" class="theme-link">Superhero</a></li>
+                  <li><a href="#" data-theme="united" class="theme-link">United</a></li>
+                  <li><a href="#" data-theme="yeti" class="theme-link">Yeti</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <h1>
+              <a href="javascript:$.fn.fullpage.moveSectionDown();"><i class="fa fa-dollar fa-lg text-success"></i><i class="fa fa-dollar text-success"></i></a>
+              Math Pad
+            </h1>
+            <p>
+              You can write formatted text anywhere with a beautiful LaTeX mathematic formula!
+              $$e^{i\pi}+1=0$$
+            </p>
+            <p>
+              <a href="javascript:$.fn.fullpage.moveSectionDown();" title="Start"><i class="fa fa-lg fa-arrow-circle-o-down text-primary"></i> Slide down</a> and start editing and previewing...
+            </p>
+            <p>
+              Enjoy the math!
+              <a class="pull-right" data-toggle="modal" href="#modal-container-about" title="About" style="display:inline; margin-right:1em">
+            	<i class="fa fa-lg fa-question-circle"></i></a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SECTION EDIT -->
+    <div class="section fp-noscroll" data-anchor="edit">
+    <div class="container-fluid">
+    	<div class="row clearfix">
+    		<div class="col-md-12 column">
+          <div class="row clearfix">
+            <!-- MATH BUTTON -->
+            <div class="btn-group btn-group-sm math-menu">
+              <button type="button" class="btn btn-default" value="$$" title="$$">
+                <i class="fa fa-lg fa-dollar"></i><i class="fa fa-lg fa-dollar"></i>
+              </button>
+            </div>
+            <!-- MATH MENUS -->
+            <!-- common -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="common" title="Common"><i class="fa fa-lg fa-star-o"></i></button>
+              <ul class="dropdown-menu" role="menu"aria-labelledby="common">
+                <li>
+                   <div class="math-menu">
+                     <table>
+                       <tbody align="center" valign="middle">
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\pi ">$\pi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{\mathbb R}">$\mathbb R$</button></td>
+                          <td><button type="button" class="btn btn-default" value="=">$=$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sin ">$\sin$</button></td>
+                          <td><button type="button" class="btn btn-default" value="_{&nbsp;&nbsp;}">$\square_\blacksquare$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\theta ">$\theta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{\mathbb Z}">$\mathbb Z$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\pm ">$\pm$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\cos ">$\cos$</button></td>
+                          <td><button type="button" class="btn btn-default" value="^{&nbsp;&nbsp;}">$\square^\blacksquare$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\in ">$\in$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{\mathbb C}">$\mathbb C$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\langle&nbsp;&nbsp;,&nbsp;&nbsp;\rangle">$\langle\ \rangle$</button></td>
+                          <td><button type="button" class="btn btn-default" value="e^{i\theta}">$e^{i\theta}$</button></td>
+                          <td><button type="button" class="btn btn-default" value="_{&nbsp;&nbsp;}^{&nbsp;&nbsp;}">$\square_\blacksquare^\blacksquare$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\to ">$\to$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{\mathbb Q}">$\mathbb Q$</button></td>
+                          <td><button type="button" class="btn btn-default" value="(&nbsp;&nbsp;)">$(\ )$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\left(&nbsp;&nbsp;\right)">$(\square)$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sum_{&nbsp;&nbsp;}^{&nbsp;&nbsp;}{&nbsp;&nbsp;} ">$\sum_\square^\square$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\infty ">$\infty$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{\mathbb N}">$\mathbb N$</button></td>
+                          <td><button type="button" class="btn btn-default" value="[&nbsp;&nbsp;]">$[\ ]$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\left[&nbsp;&nbsp;\right]">$[\square]$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sqrt{&nbsp;&nbsp;}">$\sqrt{\square}$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\partial ">$\partial$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Omega ">$\Omega$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\{&nbsp;&nbsp;\}">$\{\ \}$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\left\{&nbsp;&nbsp;\right\}">$\{{\small\square}\}$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{&nbsp;&nbsp;\over&nbsp;&nbsp;}">${\square\over\square}$</button></td>
+                        </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                </li>
+
+              </ul>
+            </div>
+            <!-- binary relational ops -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="birelation" title="Relations, Ops">
+                $\leq$</span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="birelation">
+                <li>
+                   <div class="math-menu">
+                     <table>
+                       <tbody align="center" valign="middle">
+                         <tr>
+                          <td><button type="button" class="btn btn-default" value="+">$+$</button></td>
+                          <td><button type="button" class="btn btn-default" value="-">$-$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\times ">$\times$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\div ">$\div$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\cdot ">$\cdot$</button></td>
+                         </tr>
+                         <tr>
+                          <td><button type="button" class="btn btn-default" value="\lt ">$\lt$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\gt ">$\gt$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\leq ">$\leq$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\geq ">$\geq$</button></td>
+                          <td><button type="button" class="btn btn-default" value="=">$=$</button></td>
+                         </tr>
+                         <tr>
+                          <td><button type="button" class="btn btn-default" value="\prec ">$\prec$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\preceq ">$\preceq$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\succ ">$\succ$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\succeq ">$\succeq$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\neq ">$\neq$</button></td>
+                         </tr>
+                         <tr>
+                          <td><button type="button" class="btn btn-default" value="\sim ">$\sim$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\approx ">$\approx$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\simeq ">$\simeq$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\cong ">$\cong$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\equiv ">$\equiv$</button></td>
+                         </tr>
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="\propto ">$\propto$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\ll ">$\ll$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\doteq ">$\doteq$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\gg ">$\gg$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\triangleq ">$\triangleq$</button></td>
+                         </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                </li>
+              </ul>
+            </div>
+            <!-- derivative -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="sum-union" title="Derivative">$\partial$ </button>
+              <ul class="dropdown-menu" role="menu"aria-labelledby="sum-union">
+                <li>
+                   <div class="math-menu">
+                     <table>
+                       <tbody align="center" valign="middle">
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="{\rm d} x ">${\rm d} x$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\dot{x}">$\dot x$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{{\rm d}&nbsp;&nbsp;\over {\rm d}&nbsp;&nbsp;}">${{\rm d}\square \over {\rm d}\square}$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\partial{&nbsp;&nbsp;} \over \partial  }">${\partial \square \over \partial \square}$</button></td>
+                         </tr>
+
+
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="{\rm d} y ">${\rm d} y$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\ddot{x}">$\ddot x$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{{\rm d} y \over {\rm d} x}">${{\rm d}y \over {\rm d}x}$</button></td>
+                          <td><button type="button" class="btn btn-default" value="{\partial^2 u \over \partial x^2}">${\partial^2 u \over \partial x^2}$</button></td>
+                         </tr>
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="\partial x ">$\partial x$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\dddot{x}">$\dddot{x}$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\Delta y \over \Delta x}">${\Delta y \over \Delta x}$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\partial^2 u \over \partial y^2}">${\partial^2 u \over \partial y^2}$</button></td>
+                         </tr>
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="\partial y ">$\partial y$</button></td>
+                           <td><button type="button" class="btn btn-default" value="'">$'$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\delta y \over \delta x}">${\delta y \over \delta x}$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\partial^2 u \over \partial x \partial y}">${\partial^2 u \over \partial x \partial y}$</button></td>
+                         </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                </li>
+
+              </ul>
+            </div>
+            <!-- integral -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="sum-union" title="Integral">$\int$</button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu"aria-labelledby="sum-union">
+                <li>
+                   <div class="math-menu">
+                     <table>
+                       <tbody align="center" valign="middle">
+                         <tr>
+                          <td><button type="button" class="btn btn-default" value="\int {&nbsp;&nbsp;} {\,\rm d} ">$\int$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\int_{&nbsp;&nbsp;} {&nbsp;&nbsp;} {\,\rm d} ">$\int_\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\int_{&nbsp;&nbsp;}^{&nbsp;&nbsp;} {&nbsp;&nbsp;} {\,\rm d} ">$\int_\square^\square$</button></td>
+                         </tr>
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="\oint {&nbsp;&nbsp;} {\,\rm d}">$\oint$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\oint_{&nbsp;&nbsp;} {&nbsp;&nbsp;} {\,\rm d} ">$\oint_\square$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\,\rm d} ">${\rm d}$</button></td>
+                         </tr>
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="\iint {&nbsp;&nbsp;} {\,\rm d} ">$\iint$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\iint_{&nbsp;&nbsp;} {&nbsp;&nbsp;} {\,\rm d} ">$\iint_\square$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\,\rm d}&nbsp;&nbsp;{\,\rm d} ">${\rm dd}$</button></td>
+                         </tr>
+                         <tr>
+                           <td><button type="button" class="btn btn-default" value="\iiint {&nbsp;&nbsp;} {\,\rm d} ">$\iiint$</button></td>
+                           <td><button type="button" class="btn btn-default" value="\iiint_{&nbsp;&nbsp;} {&nbsp;&nbsp;} {\,\rm d} ">$\iiint_\square$</button></td>
+                           <td><button type="button" class="btn btn-default" value="{\,\rm d}&nbsp;&nbsp;{\,\rm d}&nbsp;&nbsp;{\,\rm d} ">${\rm ddd}$</button></td>
+                         </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                </li>
+
+              </ul>
+            </div>
+            <!-- sum, mul, union, inter -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="sum-union" title="Sum,mul...">$\sum$</button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu"aria-labelledby="sum-union">
+                <li>
+                  <div class="math-menu">
+                    <table>
+                      <tbody align="center" valign="middle">
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\sum ">$\sum$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sum_{&nbsp;&nbsp;}">$\sum_\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sum^{&nbsp;&nbsp;}">$\sum^\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sum_{&nbsp;&nbsp;}^{&nbsp;&nbsp;}">$\sum_\square^\square$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\prod ">$\prod$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\prod_{&nbsp;&nbsp;}">$\prod_\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\prod^{&nbsp;&nbsp;}">$\prod^\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\prod_{&nbsp;&nbsp;}^{&nbsp;&nbsp;}">$\prod_\square^\square$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\bigcup ">$\bigcup$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\bigcup_{&nbsp;&nbsp;}">$\bigcup_\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\bigcup^{&nbsp;&nbsp;}">$\bigcup^\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\bigcup_{&nbsp;&nbsp;}^{&nbsp;&nbsp;}">$\bigcup_\square^\square$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\bigcap ">$\bigcap$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\bigcap_{&nbsp;&nbsp;}">$\bigcap_\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\bigcap^{&nbsp;&nbsp;}">$\bigcap^\square$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\bigcap_{&nbsp;&nbsp;}^{&nbsp;&nbsp;}">$\bigcap_\square^\square$</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!-- greek -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="greek" title="Greek">$\beta$</button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu"aria-labelledby="greek">
+                <li>
+                  <div class="math-menu">
+                    <table>
+                      <tbody align="center" valign="middle">
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\alpha ">$\alpha$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\beta ">$\beta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\gamma ">$\gamma$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\delta ">$\delta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\epsilon ">$\epsilon$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\varepsilon ">$\varepsilon$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\zeta ">$\zeta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\eta ">$\eta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\theta ">$\theta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\vartheta ">$\vartheta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\iota ">$\iota$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\kappa ">$\kappa$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\lambda ">$\lambda$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\mu ">$\mu$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\nu ">$\nu$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\xi ">$\xi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\alpha ">$\alpha$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\alpha ">$\alpha$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\alpha ">$\alpha$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\alpha ">$\alpha$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\alpha ">$\alpha$</button></td>
+                          <td><button type="button" class="btn btn-default" value="o ">$o$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\pi ">$\pi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\varpi ">$\varpi$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\rho ">$\rho$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\varrho ">$\varrho$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\sigma ">$\sigma$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\varsigma ">$\varsigma$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\tau ">$\tau$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\upsilon ">$\upsilon$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\phi ">$\phi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\varphi ">$\varphi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\chi ">$\chi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\psi ">$\psi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\omega ">$\omega$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Gamma ">$\Gamma$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\Delta ">$\Delta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Theta ">$\Theta$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Lambda ">$\Lambda$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Xi ">$\Xi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Pi ">$\Pi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Sigma ">$\Sigma$</button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="btn btn-default" value="\Upsilon ">$\Upsilon$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Phi ">$\Phi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Psi ">$\Psi$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Omega ">$\Omega$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Re ">$\Re$</button></td>
+                          <td><button type="button" class="btn btn-default" value="\Im ">$\Im$</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!-- others -->
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="greek" title="More">...</button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu"aria-labelledby="greek">
+                <li>
+                  <div class="math-menu">
+                    <div class="tabbable" id="tabs-142114" style="width:285px">
+                      <ul class="nav nav-tabs">
+                        <li class="active">
+                           <a href="#panel-mt" data-toggle="tab" title="Matrix">Mt</a>
+                        </li>
+                        <li>
+                           <a href="#panel-fn" data-toggle="tab" title="Function">Fn</a>
+                        </li>
+                        <li>
+                           <a href="#panel-op" data-toggle="tab" title="Operator">Op</a>
+                        </li>
+                        <li>
+                           <a href="#panel-de" data-toggle="tab" title="Delimiter">De</a>
+                        </li>
+                        <li>
+                           <a href="#panel-ar" data-toggle="tab" title="Arrow &amp; Font">Ar&amp;Ft</a>
+                        </li>
+                      </ul>
+
+                      <div class="tab-content pull-right">
+                        <div class="tab-pane active" id="panel-mt">
+                          <table>
+                            <tbody align="center" valign="middle">
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\ldots ">$\ldots$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\cdots ">$\cdots$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\vdots ">$\vdots$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\ddots ">$\ddots$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\begin{cases} a & b \\ c & d \end{cases}" title="cases">cases</button></td>
+                              </tr>
+                              <tr>
+                                <td colspan="2"><button type="button" class="btn btn-default" value="\begin{pmatrix} a & b \\ c & d \end{pmatrix}" title="pmatrix">$\begin{pmatrix} a & b \\ c & d \end{pmatrix}$</button></td>
+                                <td colspan="3"><button type="button" class="btn btn-default" value="\begin{pmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{m1} & \cdots & a_{mn} \end{pmatrix}" title="pmatrix">$\begin{pmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{m1} & \cdots & a_{mn} \end{pmatrix}$</button></td>
+                              </tr>
+                              <tr>
+                                <td colspan="2"><button type="button" class="btn btn-default" value="\begin{bmatrix} a & b \\ c & d \end{bmatrix}" title="pmatrix">$\begin{bmatrix} a & b \\ c & d \end{bmatrix}$</button></td>
+                                <td colspan="3"><button type="button" class="btn btn-default" value="\begin{bmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{m1} & \cdots & a_{mn} \end{bmatrix}" title="pmatrix">$\begin{bmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{m1} & \cdots & a_{mn} \end{bmatrix}$</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="tab-pane" id="panel-fn">
+                          <table>
+                            <tbody align="center" valign="middle">
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\sin ">sin</button></td>
+                                <td><button type="button" class="btn btn-default" value="\exp ">exp</button></td>
+                                <td><button type="button" class="btn btn-default" value="\sinh ">sinh</button></td>
+                                <td><button type="button" class="btn btn-default" value="\deg ">deg</button></td>
+                                <td><button type="button" class="btn btn-default" value="\arcsin ">arcsin</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\cos ">cos</button></td>
+                                <td><button type="button" class="btn btn-default" value="\ln ">ln</button></td>
+                                <td><button type="button" class="btn btn-default" value="\cosh ">cosh</button></td>
+                                <td><button type="button" class="btn btn-default" value="\det ">det</button></td>
+                                <td><button type="button" class="btn btn-default" value="\arccos ">arccos</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\tan ">tan</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lg ">lg</button></td>
+                                <td><button type="button" class="btn btn-default" value="\tanh ">tanh</button></td>
+                                <td><button type="button" class="btn btn-default" value="\dim ">dim</button></td>
+                                <td><button type="button" class="btn btn-default" value="\arctan ">arctan</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\cot ">cot</button></td>
+                                <td><button type="button" class="btn btn-default" value="\log ">log</button></td>
+                                <td><button type="button" class="btn btn-default" value="\coth ">coth</button></td>
+                                <td><button type="button" class="btn btn-default" value="\sup ">sup</button></td>
+                                <td><button type="button" class="btn btn-default" value="\limsup ">limsup</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\csc ">csc</button></td>
+                                <td><button type="button" class="btn btn-default" value="\min ">min</button></td>
+                                <td><button type="button" class="btn btn-default" value="\hom ">hom</button></td>
+                                <td><button type="button" class="btn btn-default" value="\inf ">inf</button></td>
+                                <td><button type="button" class="btn btn-default" value="\liminf ">liminf</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\sec ">sec</button></td>
+                                <td><button type="button" class="btn btn-default" value="\max ">max</button></td>
+                                <td><button type="button" class="btn btn-default" value="\ker ">ker</button></td>
+                                <td><button type="button" class="btn btn-default" value="\arg ">arg</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lim ">lim</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\gcd ">gcd</button></td>
+                                <td><button type="button" class="btn btn-default" value="\Pr ">Pr</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="tab-pane" id="panel-op">
+                          <table>
+                            <tbody align="center" valign="middle">
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="+">$+$</button></td>
+                                <td><button type="button" class="btn btn-default" value="-">$-$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\times ">$\times$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\div ">$\div$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\cdot ">$\cdot$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\ast ">$\ast$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\pm ">$\pm$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mp ">$\mp$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\land ">$\land$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lor ">$\lor$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lnot ">$\lnot$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\odot ">$\odot$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\forall ">$\forall$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\exists ">$\exists$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\nabla ">$\nabla$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\Delta ">$\Delta$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\emptyset ">$\emptyset$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\oplus ">$\oplus$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\in ">$\in$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\subset ">$\subset$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\subseteq ">$\subseteq$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\supset ">$\supset$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\supseteq ">$\supseteq$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\otimes ">$\otimes$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\notin ">$\notin$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\cup ">$\cup$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\cap ">$\cap$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\bigcup ">$\bigcup$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\bigcap ">$\bigcap$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mid ">$\mid$</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="tab-pane" id="panel-de">
+                          <table>
+                            <tbody align="center" valign="middle">
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="(">$($</button></td>
+                                <td><button type="button" class="btn btn-default" value=")">$)$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\langle ">$\langle$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\rangle ">$\rangle$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lvert ">$\lvert\cdot$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\rvert ">$\cdot\rvert$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="[">$[$</button></td>
+                                <td><button type="button" class="btn btn-default" value="]">$]$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lfloor ">$\lfloor$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\rfloor ">$\rfloor$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lVert ">$\lVert\cdot$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\rVert ">$\cdot\rVert$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\{">$\{$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\}">$\}$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\lceil ">$\lceil$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\ceil ">$\rceil$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\left ">\left</button></td>
+                                <td><button type="button" class="btn btn-default" value="\right ">\right</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="tab-pane" id="panel-ar">
+                          <table>
+                            <tbody align="center" valign="middle">
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\to ">$\to$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\gets ">$\gets$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\Rightarrow ">$\Rightarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\Leftarrow ">$\Leftarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mathrm{&nbsp; } " title="rm">$\mathrm{A1}$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mathit{&nbsp; } " title="it">$\mathit{A1}$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\hookrightarrow ">$\hookrightarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\hookleftarrow ">$\hookleftarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\uparrow ">$\uparrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\downarrow ">$\downarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mathcal{&nbsp; } " title="cal">$\mathcal{A1}$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mathscr{&nbsp; } " title="scr">$\mathscr{A1}$</button></td>
+                              </tr>
+                              <tr>
+                                <td><button type="button" class="btn btn-default" value="\leftrightarrow ">$\leftrightarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\Leftrightarrow ">$\Leftrightarrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\nearrow ">$\nearrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\searrow ">$\searrow$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mathbb{&nbsp; } " title="bb">$\mathbb{A1}$</button></td>
+                                <td><button type="button" class="btn btn-default" value="\mathfrak{&nbsp; } " title="frak">$\mathfrak{A1}$</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+          <!-- MATH INPUT -->
+          <div class="row clearfix">
+            <div id="MathInput" onkeyup="Preview.Update()"></div>
+          </div>
+    		</div>
+    	</div>
+    </div>
+    </div> <!-- END OF SECTION EDIT -->
+
+    <!-- SECTION PREVIEW -->
+    <div class="section" data-anchor="preview">
+      <div class="container-fluid">
+        <div class="row">
+          <div id="MathPreview" style="border:0px solid; padding: 20px; width:90%; margin-top:5px"></div>
+          <div id="MathBuffer" style="border:0px solid; padding: 20px; width:90%; margin-top:5px;
+          visibility:hidden; position:absolute; top:0; left: 0"></div>
+        </div>
+      </div>
+    </div> <!-- END OF SECTION PREVIEW -->
+  </div> <!-- END OF FULLPAGE -->
+
+    <div class="modal fade" id="modal-container-about" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title" id="myModalLabel">
+              <i class="fa fa-lg fa-dollar text-success"></i><i class="fa fa-dollar text-success"></i> Math Pad <small>v0.1</small>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <blockquote>
+            <p>
+              Write formatted text anywhere with LaTeX formula.
+            </p>
+          </blockquote>
+            <ul class="text-muted">
+              <li><a href="https://www.mathjax.org/">MathJax</a> -- Beautiful math in all browsers</li>
+              <li><a href="http://summernote.org/">Summernote</a> -- Super simple WYSIWYG editor on Bootstrap</li>
+              <li><a href="http://getbootstrap.com/">Bootstrap</a> -- The most popular HTML, CSS, and JS framework.</li>
+              <li><a href="https://jquery.com/">jQuery</a> -- The write less, do more, JavaScript library.</li>
+            </ul>
+          <address class="text-muted">
+            <strong><i class="fa fa-user"></i> Bo Zhuang</strong><br />
+            <i class="fa fa-envelope-o"></i> bozhuang#vip.jiangnan.edu.cn<br />
+            <i class="fa fa-university"></i> <a href="http://www.jiangnan.edu.cn/">Jiangnan University</a><br />
+            No 1800 Lihu Avenue, Wuxi, Jiangsu, 214122, P.R.C.
+          </address>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+    Preview.Init();
+    </script>
+
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
+    <script>
+      var themes = {
+        "default":
+        "https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css",
+        "cerulean" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/cerulean/bootstrap.min.css",
+        "cosmo" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/cosmo/bootstrap.min.css",
+        "cyborg" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/cyborg/bootstrap.min.css",
+        "darkly" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/darkly/bootstrap.min.css",
+        "flatly" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/flatly/bootstrap.min.css",
+        "journal" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/journal/bootstrap.min.css",
+        "lumen" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/lumen/bootstrap.min.css",
+        "paper" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/paper/bootstrap.min.css",
+        "readable" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/readable/bootstrap.min.css",
+        "sandstone" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/sandstone/bootstrap.min.css",
+        "simplex" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/simplex/bootstrap.min.css",
+        "slate" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/slate/bootstrap.min.css",
+        "spacelab" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/spacelab/bootstrap.min.css",
+        "superhero" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/superhero/bootstrap.min.css",
+        "united" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/united/bootstrap.min.css",
+        "yeti" :
+        "https://cdn.bootcss.com/bootswatch/3.3.7/yeti/bootstrap.min.css"
+      }
+      $(function(){
+         var themesheet = $('<link href="'+themes['default']+'" rel="stylesheet" />');
+          themesheet.appendTo('head');
+          $('.theme-link').click(function(){
+             var themeurl = themes[$(this).attr('data-theme')];
+              themesheet.attr('href',themeurl);
+          });
+      });
+      $('.nav-tabs > li > a').hover(function() {
+        $(this).tab('show');
+      });
+    </script>
+    <script>
+    $(".math-menu button").click(function() {
+      $('#MathInput').summernote('insertText', $(this).val());
+    });
+    $("a.math-menu").click(function() {
+      $('#MathInput').summernote('insertText', $(this).attr('title'));
+      return false;
+    });
+    </script>
+    <script>
+    if($(window).width()<800) {
+      // less toolbar for cell phone
+      $('#MathInput').summernote({
+        height: 120,
+        shortcuts: false,
+        placeholder: 'Write here, and slide down for preview...',
+        toolbar: [
+          // [groupName, [list of button]]
+          ['tools', ['color', 'style','ul', 'ol', 'bold', 'underline', 'clear','codeview']]
+        ]
+      });
+    } else {
+      $('#MathInput').summernote({
+        height: 240,
+        dialogsInBody: true,
+        placeholder: 'Write here, and slide down for preview...'
+      });
+    }
+    // summernote.change
+    $('#MathInput').on('summernote.change', function(we, contents, $editable) {
+      Preview.Update();
+    });
+    </script>
+    <script>
+    $('#fullpage').fullpage({
+      controlArrows: false,
+      scrollOverflow: true,
+      verticalCentered: false
+    });
+    </script>
+  </body>
+</html>
