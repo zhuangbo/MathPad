@@ -10,3 +10,5 @@ Build on
   * [Bootstrap](http://getbootstrap.com/) -- The most popular HTML, CSS, and JS framework.
   * [jQuery](https://jquery.com/) -- The write less, do more, JavaScript library.
   * [fullPage.js](http://alvarotrigo.com/fullPage/) -- Create beautiful fullscreen scrolling websites.
+  * [store.js](https://github.com/marcuswestin/store.js) -- Cross-browser storage for all use cases.
+  * [Pretty Date](http://fengyuanchen.github.io/prettydate/) -- A simple jQuery date prettify plugin.
