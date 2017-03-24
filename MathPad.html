@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MathPad v0.1</title>
+    <title>MathPad v0.2</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -30,16 +30,17 @@
 
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
+        elements:['MathPreview','math-menus'],
         showProcessingMessages: false,
         tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
         SVG: { scale: 100 },
         TeX: { equationNumbers: {  autoNumber: "AMS"  }}
       });
     </script>
-    <script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script>
     <script>
     var Preview = {
-      delay: 150,        // delay after keystroke before updating
+      delay: 300,        // delay after keystroke before updating
       preview: null,     // filled in by Init below
       buffer: null,      // filled in by Init below
       timeout: null,     // store setTimout id
@@ -83,6 +84,7 @@
       //  Otherwise, indicate that MathJax is running, and start the
       //    typesetting.  After it is done, call PreviewDone.
       //
+      autosave: function(text){}, // placeholder for auto save function
       CreatePreview: function () {
         Preview.timeout = null;
         if (this.mjPending) return;
@@ -100,6 +102,8 @@
             ["Typeset",MathJax.Hub,this.buffer],
             ["PreviewDone",this]
           );
+          // auto save
+          this.autosave(text);
         }
       },
       //
@@ -119,55 +123,137 @@
     </script>
   </head>
   <body>
-    <div id="fullpage">
+  <div id="fullpage">
     <!-- SECTION WELCOME -->
     <div class="section fp-noscroll" data-anchor="welcome">
       <div class="container-fluid">
         <div class="row clearfix">
+          <div id="main-navbar" class="col-xs-12 column hidden-xs">
+      			<nav class="navbar navbar-default" role="navigation">
+      				<div class="navbar-header">
+      					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="javascript:$.fn.fullpage.moveSectionDown();">
+                   <i class="fa fa-dollar fa-lg text-success"></i><i class="fa fa-dollar text-success"></i> MathPad</a>
+      				</div>
+      				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      					<ul class="nav navbar-nav navbar-right">
+                  <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="Themes"><i class="fa fa-lg fa-cog"></i></a>
+                     <ul class="dropdown-menu" role="menu" aria-labelledby="thems">
+                       <li><a href="#" data-theme="default" class="theme-link">Default</a></li>
+                       <li><a href="#" data-theme="cerulean" class="theme-link">Cerulean</a></li>
+                       <li><a href="#" data-theme="cosmo" class="theme-link">Cosmo</a></li>
+                       <li><a href="#" data-theme="cyborg" class="theme-link">Cyborg</a></li>
+                       <li><a href="#" data-theme="darkly" class="theme-link">Darkly</a></li>
+                       <li><a href="#" data-theme="flatly" class="theme-link">Flatly</a></li>
+                       <li><a href="#" data-theme="journal" class="theme-link">Journal</a></li>
+                       <li><a href="#" data-theme="lumen" class="theme-link">Lumen</a></li>
+                       <li><a href="#" data-theme="paper" class="theme-link">Paper</a></li>
+                       <li><a href="#" data-theme="readable" class="theme-link">Readable</a></li>
+                       <li><a href="#" data-theme="sandstone" class="theme-link">Sandstone</a></li>
+                       <li><a href="#" data-theme="simplex" class="theme-link">Simplex</a></li>
+                       <li><a href="#" data-theme="slate" class="theme-link">Slate</a></li>
+                       <li><a href="#" data-theme="spacelab" class="theme-link">Spacelab</a></li>
+                       <li><a href="#" data-theme="superhero" class="theme-link">Superhero</a></li>
+                       <li><a href="#" data-theme="united" class="theme-link">United</a></li>
+                       <li><a href="#" data-theme="yeti" class="theme-link">Yeti</a></li>
+                     </ul>
+      						</li>
+      						<li>
+                    <a data-toggle="modal" href="#modal-container-about" title="About">
+                  	<i class="fa fa-lg fa-question-circle"></i></a>
+      						</li>
+      					</ul>
+      				</div>
+      			</nav>
+      		</div>
 
-          <div class="jumbotron">
-            <div class="pull-right" style="display:inline; margin-right:1em">
-              <div class="dropdown">
-                <button type="button" class="btn dropdown-toggle" id="thems" data-toggle="dropdown" title="Themes"><i class="fa fa-lg fa-bars"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="thems">
-                  <li><a href="#" data-theme="default" class="theme-link">Default</a></li>
-                  <li><a href="#" data-theme="cerulean" class="theme-link">Cerulean</a></li>
-                  <li><a href="#" data-theme="cosmo" class="theme-link">Cosmo</a></li>
-                  <li><a href="#" data-theme="cyborg" class="theme-link">Cyborg</a></li>
-                  <li><a href="#" data-theme="darkly" class="theme-link">Darkly</a></li>
-                  <li><a href="#" data-theme="flatly" class="theme-link">Flatly</a></li>
-                  <li><a href="#" data-theme="journal" class="theme-link">Journal</a></li>
-                  <li><a href="#" data-theme="lumen" class="theme-link">Lumen</a></li>
-                  <li><a href="#" data-theme="paper" class="theme-link">Paper</a></li>
-                  <li><a href="#" data-theme="readable" class="theme-link">Readable</a></li>
-                  <li><a href="#" data-theme="sandstone" class="theme-link">Sandstone</a></li>
-                  <li><a href="#" data-theme="simplex" class="theme-link">Simplex</a></li>
-                  <li><a href="#" data-theme="slate" class="theme-link">Slate</a></li>
-                  <li><a href="#" data-theme="spacelab" class="theme-link">Spacelab</a></li>
-                  <li><a href="#" data-theme="superhero" class="theme-link">Superhero</a></li>
-                  <li><a href="#" data-theme="united" class="theme-link">United</a></li>
-                  <li><a href="#" data-theme="yeti" class="theme-link">Yeti</a></li>
-                </ul>
+          <div class="col-xs-8 col-sm-4 col-md-4 column">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Snippets <small>New or open one</small>
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div class="list-group">
+                <div class="row list-group-item">
+                  <a id="create" href="#" class="btn btn-info">
+                    <h5 class="list-group-item-heading">
+                      <i class="fa fa-2x fa-file-o"></i>
+                      <b>New</b></h5>
+                  </a>
+                  <a href="#modal-del-confirm" role="button" class="btn btn-warning pull-right" data-toggle="modal" title="Remove it">
+                    <h5 class="list-group-item-heading">
+                      <i class="fa fa-2x fa-trash"></i>
+                      </h5>
+                  </a>
+                </div>
+                </div>
+                <div class="list-group">
+                  <div id="snippets-list" style="overflow-y: auto">
+                  </div>
+                </div>
               </div>
             </div>
-
-            <h1>
-              <a href="javascript:$.fn.fullpage.moveSectionDown();"><i class="fa fa-dollar fa-lg text-success"></i><i class="fa fa-dollar text-success"></i></a>
-              Math Pad
-            </h1>
-            <p>
-              You can write formatted text anywhere with a beautiful LaTeX mathematic formula!
-              $$e^{i\pi}+1=0$$
-            </p>
-            <p>
-              <a href="javascript:$.fn.fullpage.moveSectionDown();" title="Start"><i class="fa fa-lg fa-arrow-circle-o-down text-primary"></i> Slide down</a> and start editing and previewing...
-            </p>
-            <p>
-              Enjoy the math!
-              <a class="pull-right" data-toggle="modal" href="#modal-container-about" title="About" style="display:inline; margin-right:1em">
-            	<i class="fa fa-lg fa-question-circle"></i></a>
-            </p>
+          </div>
+          <div class="col-xs-4 visible-xs-block">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  <i class="fa fa-dollar fa-lg text-success"></i><i class="fa fa-dollar text-success"></i> MathPad
+                </h3>
+                </div>
+              <div class="panel-body">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-cog text-success"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="thems">
+                    <li><a href="#" data-theme="default" class="theme-link">Default</a></li>
+                    <li><a href="#" data-theme="cerulean" class="theme-link">Cerulean</a></li>
+                    <li><a href="#" data-theme="cosmo" class="theme-link">Cosmo</a></li>
+                    <li><a href="#" data-theme="cyborg" class="theme-link">Cyborg</a></li>
+                    <li><a href="#" data-theme="darkly" class="theme-link">Darkly</a></li>
+                    <li><a href="#" data-theme="flatly" class="theme-link">Flatly</a></li>
+                    <li><a href="#" data-theme="journal" class="theme-link">Journal</a></li>
+                    <li><a href="#" data-theme="lumen" class="theme-link">Lumen</a></li>
+                    <li><a href="#" data-theme="paper" class="theme-link">Paper</a></li>
+                    <li><a href="#" data-theme="readable" class="theme-link">Readable</a></li>
+                    <li><a href="#" data-theme="sandstone" class="theme-link">Sandstone</a></li>
+                    <li><a href="#" data-theme="simplex" class="theme-link">Simplex</a></li>
+                    <li><a href="#" data-theme="slate" class="theme-link">Slate</a></li>
+                    <li><a href="#" data-theme="spacelab" class="theme-link">Spacelab</a></li>
+                    <li><a href="#" data-theme="superhero" class="theme-link">Superhero</a></li>
+                    <li><a href="#" data-theme="united" class="theme-link">United</a></li>
+                    <li><a href="#" data-theme="yeti" class="theme-link">Yeti</a></li>
+                  </ul>
+                </div>
+                <br />
+                  <h4>Formatted text</h4>
+                  <h4>LaTeX formula</h4>
+                <p>
+                  Enjoy it!
+                </p>
+              </div>
+              <div class="panel-footer">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-container-about">
+                  <i class="fa fa-lg text-info fa-question-circle"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-8 col-md-8 column hidden-xs">
+            <div class="jumbotron">
+              <h1>
+                <a href="javascript:$.fn.fullpage.moveSectionDown();"><i class="fa fa-dollar fa-lg text-success"></i><i class="fa fa-dollar text-success"></i></a>
+                Math Pad
+              </h1>
+              <p>
+                You can write <b>formatted text</b> anywhere with a beautiful <b>LaTeX mathematic formula</b>!
+              </p>
+              <p>
+                Enjoy it!
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -176,8 +262,8 @@
     <div class="section fp-noscroll" data-anchor="edit">
     <div class="container-fluid">
     	<div class="row clearfix">
-    		<div class="col-md-12 column">
-          <div class="row clearfix">
+    		<div class="col-xs-12 column">
+          <div id="math-menus" class="row clearfix">
             <!-- MATH BUTTON -->
             <div class="btn-group btn-group-sm math-menu">
               <button type="button" class="btn btn-default" value="$$" title="$$">
@@ -719,49 +805,63 @@
     </div> <!-- END OF SECTION PREVIEW -->
   </div> <!-- END OF FULLPAGE -->
 
-    <div class="modal fade" id="modal-container-about" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title" id="myModalLabel">
-              <i class="fa fa-lg fa-dollar text-success"></i><i class="fa fa-dollar text-success"></i> Math Pad <small>v0.1</small>
-            </h4>
-          </div>
-          <div class="modal-body">
-            <blockquote>
-            <p>
-              Write formatted text anywhere with LaTeX formula.
-            </p>
-          </blockquote>
-            <ul class="text-muted">
-              <li><a href="https://www.mathjax.org/">MathJax</a> -- Beautiful math in all browsers.</li>
-              <li><a href="http://summernote.org/">Summernote</a> -- Super simple WYSIWYG editor on Bootstrap.</li>
-              <li><a href="http://getbootstrap.com/">Bootstrap</a> -- The most popular HTML, CSS, and JS framework.</li>
-              <li><a href="https://jquery.com/">jQuery</a> -- The write less, do more, JavaScript library.</li>
-              <li><a href="http://alvarotrigo.com/fullPage/">fullPage.js</a> -- Create beautiful fullscreen scrolling websites.</li>
-            </ul>
-          <address class="text-muted">
-            <strong><i class="fa fa-user"></i> Bo Zhuang</strong><br />
-            <i class="fa fa-envelope-o"></i> bozhuang#vip.jiangnan.edu.cn<br />
-            <i class="fa fa-university"></i> <a href="http://www.jiangnan.edu.cn/">Jiangnan University</a><br />
-            No 1800 Lihu Avenue, Wuxi, Jiangsu, 214122, P.R.C.
-          </address>
-          </div>
-          <div class="modal-footer">
-             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
+  <div class="modal fade" id="modal-container-about" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="myModalLabel">
+            <i class="fa fa-lg fa-dollar text-success"></i><i class="fa fa-dollar text-success"></i> Math Pad <small>v0.1</small>
+          </h4>
+        </div>
+        <div class="modal-body">
+          <blockquote>
+          <p>
+            Write formatted text anywhere with LaTeX formula.
+          </p>
+        </blockquote>
+        <p class="text-muted"> Build on <a href="https://www.mathjax.org/" title="Beautiful math in all browsers.">MathJax</a>, <a href="http://summernote.org/" title="Super simple WYSIWYG editor on Bootstrap.">Summernote</a>, <a href="http://getbootstrap.com/" title="The most popular HTML, CSS, and JS framework.">Bootstrap</a>, <a href="https://jquery.com/" title="The write less, do more, JavaScript library.">jQuery</a>, <a href="http://alvarotrigo.com/fullPage/" title="Create beautiful fullscreen scrolling websites.">fullPage.js</a>, <a href="https://github.com/marcuswestin/store.js" title="Cross-browser storage for all use cases.">store.js
+        </a> and <a href="http://fengyuanchen.github.io/prettydate/" title="A simple jQuery date prettify plugin.">Pretty Date</a>.
+        </p>
+        <address class="text-muted">
+          <strong><i class="fa fa-user"></i> Bo Zhuang</strong><br />
+          <i class="fa fa-envelope-o"></i> bozhuang#vip.jiangnan.edu.cn<br />
+          <i class="fa fa-university"></i> <a href="http://www.jiangnan.edu.cn/">Jiangnan University</a><br />
+          No 1800 Lihu Avenue, Wuxi, Jiangsu, 214122, P.R.C.
+        </address>
+        </div>
+        <div class="modal-footer">
+           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
+  </div>
 
+		<div class="modal fade bs-example-modal-sm" id="modal-del-confirm" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title" id="myModalLabel">
+							Confirm
+						</h4>
+					</div>
+					<div class="modal-body">
+						<h4 class="text-danger"><i class="fa fa-2x fa-warning text-danger"></i> Are you sure to delete it?</h4>
+					</div>
+					<div class="modal-footer">
+						 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> <button id="remove" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <script>
-    Preview.Init();
-    </script>
 
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
+    <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
+    <script src="https://cdn.bootcss.com/prettydate/0.1.0/prettydate.min.js"></script>
+    <script src="https://cdn.bootcss.com/prettydate/0.1.0/i18n/prettydate.zh-CN.min.js"></script>
     <script>
       var themes = {
         "default":
@@ -811,20 +911,130 @@
         $(this).tab('show');
       });
     </script>
+
     <script>
-    $(".math-menu button").click(function() {
-      $('#MathInput').summernote('insertText', $(this).val());
-    });
-    $("a.math-menu").click(function() {
-      $('#MathInput').summernote('insertText', $(this).attr('title'));
-      return false;
-    });
+    //
+    // Snippets management
+    //
+    var Snippet = {
+      // index [{id:xxx, update:xxx, title:"xxx"}]
+      snippets : [],
+      it : {}, // current {id:xxx, update:xxx, text:xxx}
+
+      // load index, open the last updated
+      init: function() {
+        // load index
+        var idx = store.get('MathPad.snippets');
+        this.snippets = idx ? idx : [];
+        // open the last updated
+        this.loadnew();
+      },
+      // create snippet
+      create: function() {
+        var now = new Date();
+        this.it = {id:now.getTime(), update:now.getTime(), text:''};
+        return this.it;
+      },
+      // index it
+      index: function() {
+        var s = this.it;
+        var title = '';
+        if(s.text.length>0) {
+          try {
+            title = $(s.text).first().text();
+          } catch(err) { }
+          if(title.length==0) {
+            var n = s.text.indexOf('<');
+            if(n==-1) { n = s.text.length; }
+            if(n>20) { n = 20; }
+            title = s.text.substring(0,n);
+          }
+        }
+        var idx = this.find(s.id);
+        if(idx) { // update index
+          idx.update = s.update;
+          idx.title = title;
+        } else { // create index
+          var idx0 = {id:s.id, update:s.update, title:title};
+          this.snippets.push(idx0);
+        }
+        // sort index
+        this.sort();
+      },
+      // sort by update decent
+      sort: function() {
+        this.snippets.sort(function(a,b){
+          return b.update - a.update;
+        });
+      },
+      // find index
+      find: function(id) {
+        return this.snippets.find(function(s){
+          return s.id == id;
+        });
+      },
+      // load it from local storage
+      load: function(id) {
+        this.it = store.get('MathPad.'+id);
+      },
+      // load or new
+      loadnew: function() {
+        // open last updated or create new one
+        if(this.snippets.length > 0) {
+          this.sort();
+          this.load(this.snippets[0].id);
+        } else {
+          // or create a new one
+          this.it = this.create();
+          // update index
+          this.index();
+        }
+      },
+      // save it
+      save: function() {
+        // update it
+        this.it.update = new Date().getTime();
+        // update index
+        this.index();
+        // save it and index to storage
+        try {
+          store.set('MathPad.'+this.it.id, this.it);
+          store.set('MathPad.snippets', this.snippets);
+        } catch(err) {
+          console.log('save failed.');
+          alert('save failed.');
+        }
+      },
+      // delete it
+      remove: function() {
+        var s = this.it;
+        // remove from storage
+        try {
+          store.remove('MathPad.'+s.id);
+          // remove from index
+          this.snippets = $.grep(this.snippets, function(e){
+            return e.id != s.id;
+          });
+          // save index
+          store.set('MathPad.snippets', this.snippets);
+          // open last updated or create new one
+          this.loadnew();
+        } catch(err) {
+          console.log('remove failed.');
+        }
+      }
+    };
     </script>
+
     <script>
+    //
+    // Initialize summernote
+    //
     if($(window).width()<800) {
       // less toolbar for cell phone
       $('#MathInput').summernote({
-        height: 120,
+        minHeight: 120,
+        maxHeight: $(window).height()-120,
         shortcuts: false,
         placeholder: 'Write here, and slide down for preview...',
         toolbar: [
@@ -834,22 +1044,166 @@
       });
     } else {
       $('#MathInput').summernote({
-        height: 240,
+        minHeight: 240,
+        maxHeight: $(window).height()-120,
         dialogsInBody: true,
         placeholder: 'Write here, and slide down for preview...'
       });
     }
+    //
+    // math input buttons
+    //
+    $(".math-menu button").click(function() {
+      $('#MathInput').summernote('insertText', $(this).val());
+    });
+    $("a.math-menu").click(function() {
+      $('#MathInput').summernote('insertText', $(this).attr('title'));
+      return false;
+    });
+    </script>
+
+    <script>
+    function selectSnippetsList(slist) {
+      slist.children().each(function(){
+        var s = $(this);
+        var id = parseInt(s.attr('id'));
+        if(id == Snippet.it.id) {
+          s.addClass('list-group-item-success');
+          s.find('i.icon').attr('class', 'fa fa-2x fa-edit text-primary');
+        } else {
+          s.removeClass('list-group-item-success');
+          s.find('i.icon').attr('class', 'fa fa-lg fa-file-text-o');
+        }
+      });
+    }
+
+    function resizeSnippetsList(slist) {
+      var h = $(window).height() -
+        ($('#main-navbar').is(':hidden') ? 180 : 240)
+      slist.height(h);
+    }
+    // refresh snippets list
+    function refreshSnippetsList() {
+      var slist = $('#snippets-list');
+      // clear snippets-list
+      slist.empty();
+      // append snippets-list
+      for (s of Snippet.snippets) {
+        var d1 = new Date(s.id);
+        var d2 = new Date(s.update);
+        var item = '<a href="#" ' +
+          'id="'+ s.id + '"' +
+          ' class="list-group-item' +
+          ' snippet-item">\n' +
+          '<h5 class="list-group-item-heading" title="Title">' +
+          '<i class="icon fa fa-lg fa-file-text-o"></i> <b>' +
+          s.title + '</b></h5>\n' +
+          '<span class="list-group-item-text text-muted pull-right prettydate" title="Last update">' +
+          d2.toUTCString() + '</span>\n' +
+          '<span class="list-group-item-text text-muted" style="font-style: italic" title="Date created">' +
+          d1.toLocaleString() + '</span>\n' +
+        '</a>'
+        slist.append(item);
+      }
+      selectSnippetsList(slist);
+      resizeSnippetsList(slist);
+      $(".prettydate").prettydate();
+      // click to open snippet
+      $('.snippet-item').click(function(){
+        var id = parseInt(this.id);
+        // do not load the current item
+        if(id != Snippet.it.id) {
+          // load snippet
+          Snippet.load(id);
+          if(Snippet.it!=undefined) {
+            // set text
+            $('#MathInput').summernote('code', Snippet.it.text);
+          }
+          // select
+          selectSnippetsList(slist);
+        }
+        // goto edit
+        $.fn.fullpage.moveSectionDown();
+      });
+    }
+
+    // new snippet
+    $('#create').click(function(){
+      // if current is a new one, then remove from index
+      if(Snippet.it.text.length==0 && Snippet.load(Snippet.it.id)==undefined) {
+        // remove from index
+        Snippet.snippets = $.grep(Snippet.snippets, function(e){
+          return e.id != s.id;
+        });
+      }
+      // create new one
+      Snippet.create();
+      Snippet.index(); // add to index
+      // set text
+      $('#MathInput').summernote('code', Snippet.it.text);
+      // refresh snippet list
+      refreshSnippetsList();
+      // goto edit
+      $.fn.fullpage.moveSectionDown();
+    });
+
+    // remove snippet
+    $('#remove').click(function(){
+      // remove it
+      Snippet.remove();
+      // set text
+      $('#MathInput').summernote('code', Snippet.it.text);
+      // refresh snippet list
+      refreshSnippetsList();
+    });
+
+    $(window).resize(function(){
+      resizeSnippetsList($('#snippets-list'));
+    });
+    </script>
+
+    <script>
+    // auto save after preview
+    Preview.autosave = function (text) {
+      if(text != Snippet.it.text) {
+        // update text first
+        Snippet.it.text = text;
+        // then save
+        Snippet.save();
+        // refresh snippet list
+        refreshSnippetsList();
+      }
+    }
+
+    // Initialize preview
+    Preview.Init();
+    </script>
+
+    <script>
     // summernote.change
-    $('#MathInput').on('summernote.change', function(we, contents, $editable) {
+    $('#MathInput').on('summernote.change',
+        function(we, contents, $editable) {
       Preview.Update();
     });
     </script>
+
     <script>
+    // init
+    Snippet.init();
+    // refresh snippet list
+    refreshSnippetsList();
+    // set text
+    $('#MathInput').summernote('code', Snippet.it.text);
+    </script>
+
+    <script>
+    // Initialize fullpage
     $('#fullpage').fullpage({
       controlArrows: false,
       scrollOverflow: true,
       verticalCentered: false
     });
     </script>
+
   </body>
 </html>
