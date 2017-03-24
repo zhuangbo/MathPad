@@ -1078,8 +1078,10 @@
     }
 
     function resizeSnippetsList(slist) {
+      var nav = $('#main-navbar');
       var h = $(window).height() -
-        ($('#main-navbar').is(':hidden') ? 180 : 240)
+        (nav.is(':hidden') ? 220 : nav.height()+220);
+      console.log(nav.height());
       slist.height(h);
     }
     // refresh snippets list
