@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MathPad v0.3</title>
+    <title>MathPad</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -40,6 +40,7 @@
     <script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
     <script type="text/javascript">
     var phone = $(window).width()<576;
+    var mathInput = null;
     </script>
     <script>
     var Preview = {
@@ -92,7 +93,7 @@
         Preview.timeout = null;
         if (this.mjPending) return;
         // var text = document.getElementById("MathInput").value;
-        var text = $('#MathInput').summernote('code');
+        var text = mathInput.summernote('code');
         if (text === this.oldtext) return;
         if (this.mjRunning) {
           this.mjPending = true;
@@ -779,7 +780,7 @@
           </p>
         </blockquote>
         <p class="text-muted"> Build on <a href="https://www.mathjax.org/" title="Beautiful math in all browsers.">MathJax</a>, <a href="http://summernote.org/" title="Super simple WYSIWYG editor on Bootstrap.">Summernote</a>, <a href="http://getbootstrap.com/" title="The most popular HTML, CSS, and JS framework.">Bootstrap</a>, <a href="https://jquery.com/" title="The write less, do more, JavaScript library.">jQuery</a>, <a href="http://alvarotrigo.com/fullPage/" title="Create beautiful fullscreen scrolling websites.">fullPage.js</a>, <a href="https://github.com/marcuswestin/store.js" title="Cross-browser storage for all use cases.">store.js
-        </a> and <a href="http://fengyuanchen.github.io/prettydate/" title="A simple jQuery date prettify plugin.">Pretty Date</a>.
+        </a> and <a href="http://fengyuanchen.github.io/prettydate/" title="A simple jQuery date prettify plugin.">Pretty Date</a>. Visit project <a href="https://zhuangbo.github.io/MathPad/"><i class="fa fa-home"></i> home</a> or <a href="https://github.com/zhuangbo/MathPad"><i class="fa fa-github"></i> source</a>.
         </p>
         <address class="text-muted">
           <strong><i class="fa fa-user"></i> Bo Zhuang</strong><br />
@@ -922,9 +923,10 @@
     //
     // Initialize summernote
     //
+    mathInput = $('#MathInput');
     if(phone) {
       // less toolbar for cell phone
-      $('#MathInput').summernote({
+      mathInput.summernote({
         height: 120,
         shortcuts: false,
         placeholder: 'Write here, and slide right for preview...',
@@ -934,7 +936,7 @@
         ]
       });
     } else {
-      $('#MathInput').summernote({
+      mathInput.summernote({
         height: 240,
         dialogsInBody: true,
         placeholder: 'Write here, and slide down for preview...'
@@ -942,17 +944,17 @@
     }
 
     // summernote.change
-    $('#MathInput').on('summernote.change',
+    mathInput.on('summernote.change',
         function(we, contents, $editable) {
       Preview.Update();
     });
 
     // on click for math input buttons and links
     $(".math-menu button").click(function() {
-      $('#MathInput').summernote('insertText', $(this).val());
+      mathInput.summernote('insertText', $(this).val());
     });
     $("a.math-menu").click(function() {
-      $('#MathInput').summernote('insertText', $(this).attr('title'));
+      mathInput.summernote('insertText', $(this).attr('title'));
       return false;
     });
 
@@ -975,10 +977,10 @@
     // on leave/enter edit, disable/enable it
     function leaveedit(from, to, first) {
         if(first+1==from) {
-          $('#MathInput').summernote('disable');
+          mathInput.summernote('disable');
         }
         if(first+1==to) {
-          $('#MathInput').summernote('enable');
+          mathInput.summernote('enable');
         }
     }
 
@@ -1225,7 +1227,7 @@
           if(loaded!=undefined) {
             Snippet.it = loaded;
             // set text
-            $('#MathInput').summernote('code', Snippet.it.text);
+            mathInput.summernote('code', Snippet.it.text);
             // select
             selectSnippetsList(slist);
           } else {
@@ -1248,7 +1250,7 @@
       Snippet.create();
       Snippet.index(); // add to index
       // set text
-      $('#MathInput').summernote('code', Snippet.it.text);
+      mathInput.summernote('code', Snippet.it.text);
       // refresh snippet list
       refreshSnippetsList();
       // goto edit
@@ -1266,7 +1268,7 @@
       // remove it
       Snippet.remove();
       // set text
-      $('#MathInput').summernote('code', Snippet.it.text);
+      mathInput.summernote('code', Snippet.it.text);
       // refresh snippet list
       refreshSnippetsList();
     });
@@ -1305,7 +1307,7 @@
     // refresh snippet list
     refreshSnippetsList();
     // set text
-    $('#MathInput').summernote('code', Snippet.it.text);
+    mathInput.summernote('code', Snippet.it.text);
     </script>
 
   </body>
