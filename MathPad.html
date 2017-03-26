@@ -174,7 +174,7 @@
                   </ul>
                 </div>
                 <a href="#modal-sliding-mode" class="btn pull-right" data-toggle="modal" title="Sliding mode">
-                    <i id="sliding-mode-indicator" class="fa fa-lg fa-arrows-h text-info"></i>
+                    <i id="sliding-mode-indicator" class=""></i>
                 </a>
               </div>
               <div class="panel-body">
@@ -842,57 +842,171 @@
     <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
     <script src="https://cdn.bootcss.com/prettydate/0.1.0/prettydate.min.js"></script>
     <script src="https://cdn.bootcss.com/prettydate/0.1.0/i18n/prettydate.zh-CN.min.js"></script>
+
     <script>
-      var themes = {
-        "default":
-        "https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css",
-        "cerulean" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/cerulean/bootstrap.min.css",
-        "cosmo" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/cosmo/bootstrap.min.css",
-        "cyborg" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/cyborg/bootstrap.min.css",
-        "darkly" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/darkly/bootstrap.min.css",
-        "flatly" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/flatly/bootstrap.min.css",
-        "journal" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/journal/bootstrap.min.css",
-        "lumen" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/lumen/bootstrap.min.css",
-        "paper" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/paper/bootstrap.min.css",
-        "readable" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/readable/bootstrap.min.css",
-        "sandstone" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/sandstone/bootstrap.min.css",
-        "simplex" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/simplex/bootstrap.min.css",
-        "slate" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/slate/bootstrap.min.css",
-        "spacelab" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/spacelab/bootstrap.min.css",
-        "superhero" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/superhero/bootstrap.min.css",
-        "united" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/united/bootstrap.min.css",
-        "yeti" :
-        "https://cdn.bootcss.com/bootswatch/3.3.7/yeti/bootstrap.min.css"
-      }
-      $(function(){
-         var themesheet = $('<link href="'+themes['default']+'" rel="stylesheet" />');
-          themesheet.appendTo('head');
-          $('.theme-link').click(function(){
-             var themeurl = themes[$(this).attr('data-theme')];
-              themesheet.attr('href',themeurl);
-          });
-      });
-      $('.nav-tabs > li > a').hover(function() {
-        $(this).tab('show');
-      });
+    //
+    // fitting view structure for mobile and desktop
+    //
+    if(phone) {
+      // horizontal scroll for small media
+      // change sections to slides
+      $('#page-welcome,#page-edit,#page-preview')
+        .removeClass('section')
+        .addClass('slide');
+      // #fullpage as section, #mobile-wapper as new fullpage
+      $('#fullpage')
+        .addClass('section')
+        .addClass('fp-noscroll');
+      // prevent scroll bar for edit to avoiding
+      // lose-focus-problem caused by window resing
+      $('#page-welcome').removeClass('fp-noscroll');
+    } else {
+      // keep initial settings
+    }
+
+    // show sliding mode indicator
+    $('#sliding-mode-indicator').attr('class',
+      phone ? 'fa fa-lg fa-arrows-h text-info'
+      : 'fa fa-lg fa-arrows-v text-info'
+    );
+
+    // change themes
+    var themes = {
+      "default":
+      "https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css",
+      "cerulean" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/cerulean/bootstrap.min.css",
+      "cosmo" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/cosmo/bootstrap.min.css",
+      "cyborg" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/cyborg/bootstrap.min.css",
+      "darkly" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/darkly/bootstrap.min.css",
+      "flatly" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/flatly/bootstrap.min.css",
+      "journal" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/journal/bootstrap.min.css",
+      "lumen" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/lumen/bootstrap.min.css",
+      "paper" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/paper/bootstrap.min.css",
+      "readable" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/readable/bootstrap.min.css",
+      "sandstone" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/sandstone/bootstrap.min.css",
+      "simplex" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/simplex/bootstrap.min.css",
+      "slate" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/slate/bootstrap.min.css",
+      "spacelab" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/spacelab/bootstrap.min.css",
+      "superhero" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/superhero/bootstrap.min.css",
+      "united" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/united/bootstrap.min.css",
+      "yeti" :
+      "https://cdn.bootcss.com/bootswatch/3.3.7/yeti/bootstrap.min.css"
+    }
+    $(function(){
+       var themesheet = $('<link href="'+themes['default']+'" rel="stylesheet" />');
+        themesheet.appendTo('head');
+        $('.theme-link').click(function(){
+           var themeurl = themes[$(this).attr('data-theme')];
+            themesheet.attr('href',themeurl);
+        });
+    });
     </script>
 
     <script>
+    //
+    // Initialize summernote
+    //
+    if(phone) {
+      // less toolbar for cell phone
+      $('#MathInput').summernote({
+        height: 120,
+        shortcuts: false,
+        placeholder: 'Write here, and slide right for preview...',
+        toolbar: [
+          // [groupName, [list of button]]
+          ['tools', ['color', 'style','ul', 'ol', 'bold', 'underline', 'clear','codeview']]
+        ]
+      });
+    } else {
+      $('#MathInput').summernote({
+        height: 240,
+        dialogsInBody: true,
+        placeholder: 'Write here, and slide down for preview...'
+      });
+    }
+
+    // summernote.change
+    $('#MathInput').on('summernote.change',
+        function(we, contents, $editable) {
+      Preview.Update();
+    });
+
+    // on click for math input buttons and links
+    $(".math-menu button").click(function() {
+      $('#MathInput').summernote('insertText', $(this).val());
+    });
+    $("a.math-menu").click(function() {
+      $('#MathInput').summernote('insertText', $(this).attr('title'));
+      return false;
+    });
+
+    // make the math menu 'others' hover active
+    $('.nav-tabs > li > a').hover(function() {
+      $(this).tab('show');
+    });
+
+    // adjust math-menus dropdown style for desktop
+    if(!phone) {
+      $('#math-menus ul').removeClass('dropdown-menu-right');
+    }
+    </script>
+
+    <script type="text/javascript">
+    //
+    // Initialize fullpage
+    //
+
+    // on leave/enter edit, disable/enable it
+    function leaveedit(from, to, first) {
+        if(first+1==from) {
+          $('#MathInput').summernote('disable');
+        }
+        if(first+1==to) {
+          $('#MathInput').summernote('enable');
+        }
+    }
+
+    // Initialize fullpage
+    var fp = phone ? '#mobile-wapper' : '#fullpage';
+    $(fp).fullpage({
+      controlArrows: false,
+      scrollOverflow: true,
+      loopHorizontal: false,
+      verticalCentered: false,
+      onLeave: function(index, nextIndex, direction){
+        leaveedit(index, nextIndex, 1);
+      },
+      onSlideLeave: function(anchorLink, index, slideIndex, direction, nextSlideIndex){
+        leaveedit(slideIndex, nextSlideIndex, 0);
+      }
+    });
+
+    // goto edit
+    function gotoedit() {
+      if(phone) {
+        $.fn.fullpage.moveSlideRight();
+      } else {
+        $.fn.fullpage.moveSectionDown();
+      }
+    }
+    </script>
+
+    <script type="text/javascript">
     //
     // Snippets management
     //
@@ -1039,75 +1153,11 @@
     };
     </script>
 
-    <script>
-    //
-    // Initialize summernote
-    //
-    if(phone) {
-      // less toolbar for cell phone
-      $('#MathInput').summernote({
-        height: 120,
-        shortcuts: false,
-        placeholder: 'Write here, and slide right for preview...',
-        toolbar: [
-          // [groupName, [list of button]]
-          ['tools', ['color', 'style','ul', 'ol', 'bold', 'underline', 'clear','codeview']]
-        ]
-      });
-    } else {
-      $('#MathInput').summernote({
-        height: 240,
-        dialogsInBody: true,
-        placeholder: 'Write here, and slide down for preview...'
-      });
-    }
-    //
-    // math input buttons
-    //
-    $(".math-menu button").click(function() {
-      $('#MathInput').summernote('insertText', $(this).val());
-    });
-    $("a.math-menu").click(function() {
-      $('#MathInput').summernote('insertText', $(this).attr('title'));
-      return false;
-    });
-    </script>
-
-
     <script type="text/javascript">
-    // sliding mode indicator
-    $('#sliding-mode-indicator').attr('class',
-      phone ? 'fa fa-lg fa-arrows-h text-info'
-      : 'fa fa-lg fa-arrows-v text-info'
-    );
-
-    // horizontal scroll for small media
-    if(phone) {
-      $('#page-welcome,#page-edit,#page-preview')
-        .removeClass('section')
-        .removeClass('fp-noscroll')
-        .addClass('slide');
-      $('#fullpage')
-        .addClass('section')
-        .addClass('fp-noscroll');
-    } else {
-      // keep initial settings
-    }
-
-    // math-menus
-    if(!phone) {
-      $('#math-menus ul').removeClass('dropdown-menu-right');
-    }
-
-    // goto edit
-    function gotoedit() {
-      if(phone) {
-        $.fn.fullpage.moveSlideRight();
-      } else {
-        $.fn.fullpage.moveSectionDown();
-      }
-    }
-
+    //
+    // Snippets operation
+    //
+    // show selected item in the snippets list view
     function selectSnippetsList(slist) {
       slist.children().each(function(){
         var s = $(this);
@@ -1124,12 +1174,20 @@
       });
     }
 
+    // resize height of the snippets list in desktop view
     function resizeSnippetsList(slist) {
       if(!phone) {
         slist.height($(window).height() - 120);
       }
     }
-    // refresh snippets list
+
+    // resize snippets list when window resizing
+    $(window).resize(function(){
+      resizeSnippetsList($('#snippets-list'));
+      $.fn.fullpage.reBuild();
+    });
+
+    // refresh snippets list view
     function refreshSnippetsList() {
       var slist = $('#snippets-list');
       // clear snippets-list
@@ -1178,7 +1236,7 @@
       });
     }
 
-    // new snippet
+    // create new snippet
     $('#create').click(function(){
       // if current is a new one, then remove from index
       if(Snippet.isnew()) {
@@ -1211,13 +1269,12 @@
       // refresh snippet list
       refreshSnippetsList();
     });
-
-    $(window).resize(function(){
-      resizeSnippetsList($('#snippets-list'));
-    });
     </script>
 
     <script>
+    //
+    // Initialize preview
+    //
     // auto save after preview
     Preview.autosave = function (text) {
       if(text != Snippet.it.text) {
@@ -1225,7 +1282,7 @@
         Snippet.it.text = text;
         // then save
         Snippet.save();
-        // refresh snippet list
+        // refresh snippet list view
         refreshSnippetsList();
       }
     }
@@ -1235,46 +1292,15 @@
     </script>
 
     <script>
-    // summernote.change
-    $('#MathInput').on('summernote.change',
-        function(we, contents, $editable) {
-      Preview.Update();
-    });
-    </script>
-
-    <script>
+    //
+    // Initialize Snippet
+    //
     // init
     Snippet.init();
     // refresh snippet list
     refreshSnippetsList();
     // set text
     $('#MathInput').summernote('code', Snippet.it.text);
-    </script>
-
-    <script>
-    // on leave/enter edit, disable/enable it
-    function leaveedit(from, to, first) {
-        if(first+1==from) {
-          $('#MathInput').summernote('disable');
-        }
-        if(first+1==to) {
-          $('#MathInput').summernote('enable');
-        }
-    }
-    // Initialize fullpage
-    var fp = phone ? '#mobile-wapper' : '#fullpage';
-    $(fp).fullpage({
-      controlArrows: false,
-      scrollOverflow: true,
-      loopHorizontal: false,
-      verticalCentered: false,
-      onLeave: function(index, nextIndex, direction){
-        leaveedit(index, nextIndex, 1);
-      },
-      onSlideLeave: function(anchorLink, index, slideIndex, direction, nextSlideIndex){
-        leaveedit(slideIndex, nextSlideIndex, 0);
-      }
-    });
     </script>
 
   </body>
