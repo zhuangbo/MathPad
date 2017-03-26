@@ -103,7 +103,8 @@
           MathJax.Hub.Queue(
             ["resetEquationNumbers",MathJax.InputJax.TeX],
             ["Typeset",MathJax.Hub,this.buffer],
-            ["PreviewDone",this]
+            ["PreviewDone",this],
+            ["ResizePreview",this]
           );
           // auto save
           this.autosave(text);
@@ -1285,6 +1286,10 @@
         // refresh snippet list view
         refreshSnippetsList();
       }
+    }
+    // rebuild fullpage for scroll after preview done
+    Preview.ResizePreview = function() {
+      $.fn.fullpage.reBuild();
     }
 
     // Initialize preview
