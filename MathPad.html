@@ -827,10 +827,10 @@
  					</div>
  					<div class="modal-body">
             <p class="pull-right">
-            <i class="fa fa-2x fa-arrows-h text-info" style="padding-right:20px"></i> <i class="fa fa-2x fa-mobile"></i> <i class="fa fa-hand-pointer-o"></i>
+            <i class="fa fa-2x fa-arrows-h " style="padding-right:20px"></i> <i class="fa fa-2x fa-mobile"></i> <i class="fa fa-hand-pointer-o"></i>
             </p>
             <p>
-            <i class="fa fa-2x fa-arrows-v text-info" style="padding-right:20px"></i> <i class="fa fa-2x fa-desktop"></i> <i class="fa fa-mouse-pointer"></i> <i class="fa fa-2x fa-tablet"></i> <i class="fa fa-hand-pointer-o"></i>
+            <i class="fa fa-2x fa-arrows-v " style="padding-right:20px"></i> <i class="fa fa-2x fa-desktop"></i> <i class="fa fa-mouse-pointer"></i> <i class="fa fa-2x fa-tablet"></i> <i class="fa fa-hand-pointer-o"></i>
             </p>
  					<div class="modal-footer">
 					</div>
@@ -866,10 +866,10 @@
     }
 
     // show sliding mode indicator
+    var slidingfa = phone ? 'fa-arrows-h' : 'fa-arrows-v';
     $('#sliding-mode-indicator').attr('class',
-      phone ? 'fa fa-lg fa-arrows-h text-info'
-      : 'fa fa-lg fa-arrows-v text-info'
-    );
+      'fa fa-lg text-info ' + slidingfa);
+    $('#modal-sliding-mode .'+slidingfa).parent().addClass('text-info');
 
     // change themes
     var themes = {
