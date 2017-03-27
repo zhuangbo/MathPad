@@ -11,6 +11,7 @@ Now you can take notes in rich text format with a nice LaTeX formula on a comput
   * Saved in **local storage** of browser.
   * **Any device** (desktop, tablet or phone).
   * **Small size** (generally &lt;1K, about 400K for first time).
+  * LaTeX **code hints** (e.g. dd beq...).
 
 ## Online usage
 
@@ -34,6 +35,62 @@ You can print notes at the time of preview, or even export PDF files.
 ## Privacy
 
 Your notes will not be uploaded to any network device. They are kept in the browser's **local store** on your device. Its security is equivalent to the security of your device. In addition, your notes will not be shared between different browsers on the same device.
+
+## LaTeX code hints
+
+### Begin environments
+
+|	Type	|	Got	|	Type	|	Got	|
+|	----	|	----	|	----	|	----	|
+|	`barr`	|	array	|	`bgath`	|	gather	|
+|	`bali`	|	align	|	`bgaths`	|	gather*	|
+|	`balis`	|	align*	|	`bgathed`	|	gathered	|
+|	`baliat`	|	alignat	|	`bgathedo`	|	gathered	|
+|	`baliats`	|	alignat*	|	`bmat`	|	matrix	|
+|	`balied`	|	aligned	|	`bmult`	|	multline	|
+|	`bbmat`	|	bmatrix	|	`bmults`	|	multline*	|
+|	`bbmat2`	|	Bmatrix	|	`bpmat`	|	pmatrix	|
+|	`bcase`	|	cases	|	`bsplit`	|	split	|
+|	`bequ`	|	equation	|	`bsubeq`	|	subequations	|
+|	`bequs`	|	equation*	|	`bvmat`	|	vmatrix	|
+|	`beqn`	|	eqnarray	|	`bvmat2`	|	Vmatrix	|
+|	`beqns`	|	eqnarray*	|		|		|
+
+### Greek
+
+|	Type	|	Got	|	Type	|	Got	|	Type	|	Got	|	Type	|	Got	|
+|	----	|	----	|	----	|	----	|	----	|	----	|	----	|	----	|
+|	`xa`	|	alpha	|	`xph`	|	phi	|	`dxa`	|	\(alpha\)	|	`dxph`	|	\(phi\)	|
+|	`xb`	|	beta	|	`xcph`	|	Phi	|	`dxb`	|	\(beta\)	|	`dxcph`	|	\(Phi\)	|
+|	`xch`	|	chi	|	`xvph`	|	varphi	|	`dxch`	|	\(chi\)	|	`dxvph`	|	\(varphi\)	|
+|	`xd`	|	delta	|	`xps`	|	psi	|	`dxd`	|	\(delta\)	|	`dxps`	|	\(psi\)	|
+|	`xcd`	|	Delta	|	`xcps`	|	Psi	|	`dxcd`	|	\(Delta\)	|	`dxcps`	|	\(Psi\)	|
+|	`xe`	|	epsilon	|	`xs`	|	sigma	|	`dxe`	|	\(epsilon\)	|	`dxs`	|	\(sigma\)	|
+|	`xve`	|	varepsilon	|	`xcs`	|	Sigma	|	`dxve`	|	\(varepsilon\)	|	`dxcs`	|	\(Sigma\)	|
+|	`xet`	|	eta	|	`xvs`	|	varsigma	|	`dxet`	|	\(eta\)	|	`dxvs`	|	\(varsigma\)	|
+|	`xg`	|	gamma	|	`xz`	|	zeta	|	`dxg`	|	\(gamma\)	|	`dxz`	|	\(zeta\)	|
+|	`xcg`	|	Gamma	|	`xr`	|	rho	|	`dxcg`	|	\(Gamma\)	|	`dxr`	|	\(rho\)	|
+|	`xio`	|	iota	|	`xvr`	|	varrho	|	`dxio`	|	\(iota\)	|	`dxvr`	|	\(varrho\)	|
+|	`xl`	|	lambda	|	`xt`	|	tau	|	`dxl`	|	\(lambda\)	|	`dxt`	|	\(tau\)	|
+|	`xcl`	|	Lambda	|	`xth`	|	theta	|	`dxcl`	|	\(Lambda\)	|	`dxth`	|	\(theta\)	|
+|	`xm`	|	mu	|	`xcth`	|	Theta	|	`dxm`	|	\(mu\)	|	`dxcth`	|	\(Theta\)	|
+|	`xn`	|	nu	|	`xvth`	|	vartheta	|	`dxn`	|	\(nu\)	|	`dxvth`	|	\(vartheta\)	|
+|	`xo`	|	omega	|	`xu`	|	upsilon	|	`dxo`	|	\(omega\)	|	`dxu`	|	\(upsilon\)	|
+|	`xco`	|	Omega	|	`xcu`	|	Upsilon	|	`dxco`	|	\(Omega\)	|	`dxcu`	|	\(Upsilon\)	|
+|	`xp`	|	pi	|	`xx`	|	xi	|	`dxp`	|	\(pi\)	|	`dxx`	|	\(xi\)	|
+|	`xcp`	|	Pi	|	`xcx`	|	Xi	|	`dxcp`	|	\(Pi\)	|	`dxcx`	|	\(Xi\)	|
+|	`xvp`	|	varpi	|		|		|	`dxvp`	|	\(varpi\)	|		|		|
+
+### Math fonts and others
+
+|	Type	|	Got	|	Type	|	Got	|
+|	----	|	----	|	----	|	----	|
+|	`mbf`	|	mathbf	|	`dd`	|	\( \)	|
+|	`mrm`	|	mathrm	|	`frac`	|	frac	|
+|	`mcal`	|	mathcal	|	`sqrt`	|	sqrt	|
+|	`msf`	|	mathsf	|	`sqrto`	|	sqrt[]	|
+|	`mtt`	|	mathtt	|	`ref`	|	ref	|
+|	`mit`	|	mathit	|	`eqref`	|	eqref	|
 
 ## Build on
 
