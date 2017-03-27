@@ -742,7 +742,7 @@
           <div class="panel-body" style="padding-top:0px">
             <!-- MATH INPUT -->
             <div class="row clearfix">
-              <div id="MathInput" onkeyup="Preview.Update()"></div>
+              <div id="MathInput"></div>
             </div>
           </div>
         </div>
@@ -1070,6 +1070,9 @@
         return hints[item].t;
       },
       content: function (item) {
+        // Fix: arrange update for hint input
+        Preview.Update();
+        // convert to html for space(&nbsp;) support
         return $('<span>'+hints[item].c+'</span>').text();
       }
     };
@@ -1467,7 +1470,7 @@
     <script src="https://cdn.bootcss.com/jQuery.print/1.5.1/jQuery.print.min.js"></script>
     <script type="text/javascript">
     // On print
-    $('#printit').click(function functionName() {
+    $('#printit').click(function() {
       $('#PrintView').print();
     });
     </script>
