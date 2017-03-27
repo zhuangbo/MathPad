@@ -103,3 +103,4 @@ We use LaTeX hints like [TeXWorks](https://www.tug.org/texworks/).
   * [fullPage.js](http://alvarotrigo.com/fullPage/) -- Create beautiful fullscreen scrolling websites.
   * [store.js](https://github.com/marcuswestin/store.js) -- Cross-browser storage for all use cases.
   * [Pretty Date](http://fengyuanchen.github.io/prettydate/) -- A simple jQuery date prettify plugin.
+  * [jQuery.print](https://github.com/DoersGuild/jQuery.print) -- Easy to use, Element Printing Plugin for jQuery.
