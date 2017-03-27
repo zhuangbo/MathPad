@@ -754,10 +754,15 @@
     <!-- SECTION PREVIEW -->
     <div id="page-preview" class="section" data-anchor="preview">
       <div class="container-fluid">
+        <button id="printit" type="button" class="btn btn-default pull-right hidden-xs" title="Print">
+          <i class="fa fa-print"></i>
+        </button>
         <div class="row">
+          <div id="PrintView">
           <div id="MathPreview" style="border:0px solid; padding: 20px; width:90%; margin-top:5px"></div>
           <div id="MathBuffer" style="border:0px solid; padding: 20px; width:90%; margin-top:5px;
           visibility:hidden; position:absolute; top:0; left: 0"></div>
+          </div>
         </div>
       </div>
     </div> <!-- END OF SECTION PREVIEW -->
@@ -1457,6 +1462,14 @@
     refreshSnippetsList();
     // set text
     mathInput.summernote('code', Snippet.it.text);
+    </script>
+
+    <script src="https://cdn.bootcss.com/jQuery.print/1.5.1/jQuery.print.min.js"></script>
+    <script type="text/javascript">
+    // On print
+    $('#printit').click(function functionName() {
+      $('#PrintView').print();
+    });
     </script>
 
   </body>
