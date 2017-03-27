@@ -779,8 +779,11 @@
             Write formatted text anywhere with LaTeX formula.
           </p>
         </blockquote>
+        <p>
+           Project <a href="https://zhuangbo.github.io/MathPad/"><i class="fa fa-home"></i> Home</a>, <a href="https://github.com/zhuangbo/MathPad"><i class="fa fa-github"></i> Source</a>, <a href="https://zhuangbo.github.io/MathPad/#privacy"><i class="fa fa-key"></i> Privacy</a>, <a href="https://zhuangbo.github.io/MathPad/#latex-code-hints"><i class="fa fa-keyboard-o"></i> LaTeX hints</a>.
+        </p>
         <p class="text-muted"> Build on <a href="https://www.mathjax.org/" title="Beautiful math in all browsers.">MathJax</a>, <a href="http://summernote.org/" title="Super simple WYSIWYG editor on Bootstrap.">Summernote</a>, <a href="http://getbootstrap.com/" title="The most popular HTML, CSS, and JS framework.">Bootstrap</a>, <a href="https://jquery.com/" title="The write less, do more, JavaScript library.">jQuery</a>, <a href="http://alvarotrigo.com/fullPage/" title="Create beautiful fullscreen scrolling websites.">fullPage.js</a>, <a href="https://github.com/marcuswestin/store.js" title="Cross-browser storage for all use cases.">store.js
-        </a> and <a href="http://fengyuanchen.github.io/prettydate/" title="A simple jQuery date prettify plugin.">Pretty Date</a>. Visit project <a href="https://zhuangbo.github.io/MathPad/"><i class="fa fa-home"></i> home</a> or <a href="https://github.com/zhuangbo/MathPad"><i class="fa fa-github"></i> source</a>.
+        </a> and <a href="http://fengyuanchen.github.io/prettydate/" title="A simple jQuery date prettify plugin.">Pretty Date</a>.
         </p>
         <address class="text-muted">
           <strong><i class="fa fa-user"></i> Bo Zhuang</strong><br />
@@ -1067,13 +1070,14 @@
     };
     // Math input object
     mathInput = $('#MathInput');
+    var placeholder = 'Write here, slide # for preview... type dd beq for good luck...';
     if(phone) {
       // less toolbar for cell phone
       mathInput.summernote({
         height: 120,
         shortcuts: false,
         hint: thehint,
-        placeholder: 'Write here, and slide right for preview...',
+        placeholder: placeholder.replace('#','right'),
         toolbar: [
           // [groupName, [list of button]]
           ['tools', ['color', 'style','ul', 'ol', 'bold', 'underline', 'clear','codeview']]
@@ -1084,7 +1088,7 @@
         height: 240,
         hint: thehint,
         dialogsInBody: true,
-        placeholder: 'Write here, and slide down for preview...'
+        placeholder: placeholder.replace('#','down')
       });
     }
 
