@@ -10,7 +10,7 @@ Now you can take notes in rich text format with a nice LaTeX formula on a comput
   * Write **formatted text** with **LaTeX formula**.
   * Saved in **local storage** of browser.
   * **Any device** (desktop, tablet or phone).
-  * **Small size** (generally &lt;1K, about 413K for first time).
+  * Super **lightweight** (generally &lt;1K (370B), about 415K for first time).
   * LaTeX **code hints** (e.g. dd beq...).
 
 ## Online usage
