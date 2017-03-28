@@ -959,7 +959,9 @@
       " zxy xt ut vt dd3 ddyx ddyx2 ddyx3 pp ppux ppuy ppzx ppzy"+
       " ppux2 ppuy2 ppzx2 ppzy2 ppuxy ppzxy int int2 int3 oint oint2"+
       " iint iint2 iiint iiint2"
-      ).split(' '),
+    ).split(' ').sort(function(a,b){
+      return a>b ? 1 : a<b ? -1 : 0;
+    }),
       xa: { t:'alpha', c:'\\alpha'},
       xb: { t:'beta', c:'\\beta'},
       xch: { t:'chi', c:'\\chi'},
@@ -1191,9 +1193,9 @@
       vt: { t:'v(t)', c:'v(t)'},
       dd3: { t:'d&#x25a1;/d&#x25a1;', c:'{{\\rm d}'+S2+'\\over {\\rm d}'+S2+'}'},
       ddyx: { t:'dy/dx', c:'{{\\rm d} y \\over {\\rm d} x }'},
-      ddyx2: { t:'&Delta;y/&Delta;x', c:'{\\Delta y \\over \Delta x }'},
-      ddyx3: { t:'&delta;y/&delta;x', c:'{\\delta y \\over \delta x }'},
-      pp: { t:'&part;&#x25a1;/&part;&#x25a1;', c:'{\\partial'+S2+'\\over \partial'+S2+'}'},
+      ddyx2: { t:'&Delta;y/&Delta;x', c:'{\\Delta y \\over \\Delta x }'},
+      ddyx3: { t:'&delta;y/&delta;x', c:'{\\delta y \\over \\delta x }'},
+      pp: { t:'&part;&#x25a1;/&part;&#x25a1;', c:'{\\partial'+S2+'\\over \\partial'+S2+'}'},
       ppux: { t:'&part;u/&part;x', c:'{\\partial u \\over \\partial x }'},
       ppuy: { t:'&part;u/&part;y', c:'{\\partial u \\over \\partial y }'},
       ppzx: { t:'&part;z/&part;x', c:'{\\partial z \\over \\partial x }'},
@@ -1214,6 +1216,7 @@
       iiint: { t:'&#x222d;&#x33b;', c:'\\iiint_{'+S2+'}'},
       iiint2: { t:'&#x222d;', c:'\\iiint'}
     };
+    
     var thehint = {
       match: /\b(\w{2,4})$/,
       search: function (keyword, callback) {
