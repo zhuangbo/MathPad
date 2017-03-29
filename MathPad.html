@@ -1282,11 +1282,7 @@
     var items = [];
     for (var i in hintsconf) {
       var a = hintsconf[i].trim().split(/\s*##\s*/);
-      var ch = a[1].charAt(a[1].length-1);
-      if(ch>='A' && ch<='Z' || ch>='a' && ch<='z') {
-        a[1] = a[1] + '&nbsp;'; // append white space
-      }
-      a[1] = a[1].replace(/\s{2}/g,'&nbsp;&nbsp;');
+      a[1] = a[1].replace(/\s{2}/g,'&nbsp;&nbsp;') + '&nbsp;';
       var key = a.shift();
       items.push(key);
       hints[key] = a;
