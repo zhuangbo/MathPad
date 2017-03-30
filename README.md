@@ -1,11 +1,11 @@
 # MathPad
 Write formatted text anywhere with LaTeX formula.
 
-![MathPad](img/welcome.png)
-
 > Try now, [MathPad](https://zhuangbo.github.io/MathPad/MathPad.html)
 
 Now you can take notes in rich text format with a nice LaTeX formula on a computer, tablet or phone, anytime, anywhere.
+
+![MathPad](img/welcome.png)
 
 ## Features
 
