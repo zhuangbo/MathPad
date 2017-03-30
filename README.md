@@ -1,6 +1,8 @@
 # MathPad
 Write formatted text anywhere with LaTeX formula.
 
+![MathPad](img/welcome.png)
+
 > Try now, [MathPad](https://zhuangbo.github.io/MathPad/MathPad.html)
 
 Now you can take notes in rich text format with a nice LaTeX formula on a computer, tablet or phone, anytime, anywhere.
@@ -11,7 +13,7 @@ Now you can take notes in rich text format with a nice LaTeX formula on a comput
   * Saved in **local storage** of browser.
   * **Any device** (desktop, tablet or phone).
   * Super **lightweight** (generally &lt;1K (370B), about 415K for first time).
-  * LaTeX **code hints** (e.g. dd beq...).
+  * LaTeX **code hints** (370+, e.g. `dd` `beq`...) + **user-defined hints** (define your own code hints).
 
 ## Online usage
 
@@ -30,7 +32,7 @@ You can [download](https://github.com/zhuangbo/MathPad/archive/master.zip) it di
 
 ## Print
 
-You can print notes at the time of preview, or even export PDF files.
+You can print your notes at the time of preview, or even export PDF files by PDF printer.
 
 ## Privacy
 
@@ -38,7 +40,22 @@ Your notes will not be uploaded to any network device. They are kept in the brow
 
 ## LaTeX code hints
 
-We use LaTeX hints like [TeXWorks](https://www.tug.org/texworks/).
+We use LaTeX hints like [TeXWorks](https://www.tug.org/texworks/) and greatly expanded this featuer. More than 370 code hints are predefined in order to facilitate the input of mathematical formulas. In particular, in most cases, the corresponding LaTeX formula will be displayed intuitively in the prompt menu, which provides an unprecedented writing experience.
+
+![Code hints](img/hint-menu.png)
+
+You can define your own code hints in the "Hints" dialog in the following format:
+`(hint) ## (code) [## [display] ## [display phone]]`
+to replace `(hint)` with `(code)` and display `[display]` or `[display phone]` (phone only) in the menu. Here are some examples.
+  * `xa ## \alpha` （Replace `xa` with `\alpha`)
+  * `sqrt ## \sqrt{ } ## sqrt` (Replace `sqrt` with `\sqrt`, show `sqrt` in menu)
+  * `rq ## {-b\pm\sqrt{b^2-4ac} \over 2a} ## ## root of quadr. eq` (Replace `rq` with the root of a quadratic equation, show `root of quadr. eq` in menu at phone)
+
+![Settings](img/settings.png)
+
+ Some code hints are listed below. To get a complete list of code hints, check the "Hints" dialog in the settings.
+
+ ![Hints list](img/hints-dialog.png)
 
 ### Begin environments
 
