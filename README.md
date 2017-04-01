@@ -9,11 +9,13 @@ Now you can take notes in rich text format with a nice LaTeX formula on a comput
 
 ## Features
 
-  * Write **formatted text** with **LaTeX formula**.
+  * Write **formatted text** with **LaTeX formula**^[Do not insert new line inside a LaTeX formula. Because new line will be considered as a new paragraph, which will break the formula.].
   * Saved in **local storage** of browser.
   * **Any device** (desktop, tablet or phone).
-  * Super **lightweight** (generally &lt;1K (370B), about 415K for first time).
+  * Super **lightweight** (generally &lt;1K (370B), about 448K for first time).
   * LaTeX **code hints** (370+, e.g. `dd` `beq`...) + **user-defined hints** (define your own code hints).
+
+> Note: Do **NOT** insert **new line** inside a LaTeX formula.
 
 ## Online usage
 
