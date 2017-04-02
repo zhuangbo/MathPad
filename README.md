@@ -34,7 +34,7 @@ You can [download](https://github.com/zhuangbo/MathPad/archive/master.zip) it di
 
 ## Print
 
-You can print your notes at the time of preview, or even export PDF files by PDF printer.
+You can print your notes at the time of preview, or even export PDF files by PDF printer (e.g. [Bullzip](http://www.bullzip.com/products/pdf/info.php) a free PDF printer).
 
 ## Privacy
 
