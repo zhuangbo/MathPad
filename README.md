@@ -47,7 +47,8 @@ We use LaTeX hints like [TeXWorks](https://www.tug.org/texworks/) and greatly ex
 ![Code hints](img/hint-menu.png)
 
 You can define your own code hints in the "Hints" dialog in the following format:
-`(hint) ## (code) [## [display] ## [display phone]]`
+  * `(hint) ## (code) [## [display] ## [display phone]]`
+
 to replace `(hint)` with `(code)` and display `[display]` or `[display phone]` (phone only) in the menu. Here are some examples.
   * `xa ## \alpha` （Replace `xa` with `\alpha`)
   * `sqrt ## \sqrt{ } ## sqrt` (Replace `sqrt` with `\sqrt`, show `sqrt` in menu)
